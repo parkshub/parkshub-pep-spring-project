@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.entity.Account;
+import com.example.exception.DuplicateException;
 import com.example.service.AccountService;
 
 /**
@@ -30,11 +31,13 @@ public class SocialMediaController {
 
     @PostMapping("/register")
     public ResponseEntity<Account> registerAccount(@RequestBody Account newAccount) {
-    try {
         Account registeredAccount = accountService.registerAccount(newAccount);
         return ResponseEntity.status(HttpStatus.OK).body(registeredAccount);
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
     }
-}
+
+    @PostMapping("/login")
+    public ResponseEntity<Account> login(@RequestBody Account account) {
+        accountService.loginAccount(account);
+        return ResponseEntity.status(HttpStatus.OK).body(account);
+    }
 }
