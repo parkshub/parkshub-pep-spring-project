@@ -1,15 +1,20 @@
 package com.example.controller;
 
+import javax.naming.AuthenticationException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.entity.Account;
+import com.example.entity.Message;
 import com.example.exception.DuplicateException;
 import com.example.service.AccountService;
+import com.example.service.MessageService;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller using Spring. The endpoints you will need can be
@@ -25,7 +30,9 @@ public class SocialMediaController {
 // - If the registration is not successful due to a duplicate username, the response status should be 409. (Conflict)
 // - If the registration is not successful for some other reason, the response status should be 400. (Client error)
     AccountService accountService;
-    public SocialMediaController(AccountService accountService) {
+    MessageService messageSerivce;
+    public SocialMediaController(AccountService accountService, MessageService messageSerivce) {
+        this.messageSerivce = messageSerivce;
         this.accountService = accountService;
     }
 
@@ -36,8 +43,25 @@ public class SocialMediaController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Account> login(@RequestBody Account account) {
-        accountService.loginAccount(account);
-        return ResponseEntity.status(HttpStatus.OK).body(account);
+    public ResponseEntity<Account> login(@RequestBody Account account) throws AuthenticationException {
+        Account matchedAccount = accountService.loginAccount(account);
+        return ResponseEntity.status(HttpStatus.OK).body(matchedAccount);
     }
+
+    // ## 3: Our API should be able to process the creation of new messages.
+
+    // As a user, I should be able to submit a new post on the endpoint POST localhost:8080/messages. 
+    // The request body will contain a JSON representation of a message, which should be persisted to the database, but will not contain a messageId.
+
+    // The creation of the message will be successful if and only if the messageText is not blank, is not over 255 characters, 
+    // and postedBy refers to a real, existing user. If successful, the response body should contain a JSON of the message, 
+    // including its messageId. The response status should be 200, which is the default. The new message should be persisted to the database.
+    // If the creation of the message is not successful, the response status should be 400. (Client error)
+
+    @PostMapping("/messages")
+    public ResponseEntity<Message> createMessage(@RequestBody Message message) {
+        Message createdMessage = messageSerivce.createMessage(message);
+        return ResponseEntity.ok(createdMessage);
+    }
+
 }

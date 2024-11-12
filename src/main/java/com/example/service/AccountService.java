@@ -4,6 +4,9 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import javax.naming.AuthenticationException;
+
+
 import com.example.entity.Account;
 import com.example.exception.DuplicateException;
 import com.example.repository.AccountRepository;
@@ -33,9 +36,19 @@ public class AccountService {
         return accountRepository.save(newAccount);
     }
 
-    public void loginAccount(Account account) {
-        // Todo: fix from here
-        throw new UnsupportedOperationException("Unimplemented method 'loginAccount'");
+    public Account loginAccount(Account account) throws AuthenticationException {
+        Account matchedAccount = accountRepository.findByUsername(account.getUsername()).orElse(null);
+
+        // using the same authentication error message for both to avoid givin hints
+        if (matchedAccount == null) {
+            throw new AuthenticationException("Authentication failed, please try again");
+        }
+
+        if (!matchedAccount.getPassword().equals(account.getPassword())) {
+            throw new AuthenticationException("Authentication failed, please try again");
+        }
+
+        return matchedAccount;
     }
 
 }
