@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.entity.Account;
 import com.example.entity.Message;
 import com.example.repository.AccountRepository;
 import com.example.repository.MessageRepository;
@@ -21,7 +22,7 @@ public class MessageService {
 
     public Message createMessage(Message message) {
         if (message.getMessageText().length() > 255 || message.getMessageText().isEmpty()) {
-            throw new IllegalArgumentException("Message should not be empty nor should it be longer than 255 characters.");
+            throw new IllegalArgumentException("Message should not be empty and should not be over 255 characters");
         }
 
         if (accountRepository.findById(message.getPostedBy()).orElse(null) == null) {
@@ -44,8 +45,25 @@ public class MessageService {
     }
 
     public int deleteMessages(int messageId) {
-        System.out.println("you reached here3333\n\n\n");
         int rows = messageRepository.deleteMessageById(messageId);
         return rows;
+    }
+
+    public int updateMessage(int messageId, String messageText) {
+        if (messageText.length() > 255 || messageText.equals("{\"messageText\": \"\"}") || messageText.isEmpty()) {
+            throw new IllegalArgumentException("Message should not be empty and should not be over 255 characters");
+        }
+
+        if (messageRepository.findById(messageId).orElse(null) == null) {
+            throw new IllegalArgumentException("Message not found");
+        }
+
+        int rows = messageRepository.updateMessageById(messageId, messageText);
+        return rows;
+    }
+
+    public List<Message> getAllMessagesByUser(int accountId) {
+        List<Message> messages = messageRepository.getAllMessagesByUser(accountId);
+        return messages;
     }
 }

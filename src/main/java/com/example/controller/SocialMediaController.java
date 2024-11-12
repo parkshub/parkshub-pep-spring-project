@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -87,5 +88,19 @@ public class SocialMediaController {
         System.out.println("you reached here\n\n");
         Integer rows = messageSerivce.deleteMessages(messageId);
         return ResponseEntity.ok(rows > 0 ? rows : null);
+    }
+
+    @PatchMapping("/messages/{messageId}")
+    public ResponseEntity<Integer> updateMessage(@RequestBody String messageText, @PathVariable int messageId) {
+        System.out.println("controller received this message " + messageText);
+        int rows = messageSerivce.updateMessage(messageId, messageText);
+        return ResponseEntity.ok(rows);
+    }
+
+    @GetMapping("/accounts/{accountId}/messages")
+    public ResponseEntity<List<Message>> getAllMessagesByUser(@PathVariable int accountId) {
+        System.out.println("here111111111");
+        List<Message> messages = messageSerivce.getAllMessagesByUser(accountId);
+        return ResponseEntity.ok(messages);
     }
 }
