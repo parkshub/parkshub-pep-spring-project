@@ -42,4 +42,10 @@ public class MessageService {
         Message message = messageRepository.findById(messageId).orElse(null);
         return message;
     }
+
+    public int deleteMessages(int messageId) {
+        System.out.println("you reached here3333\n\n\n");
+        int rows = messageRepository.deleteMessageById(messageId);
+        return rows;
+    }
 }

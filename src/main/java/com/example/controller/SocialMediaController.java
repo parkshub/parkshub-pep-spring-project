@@ -6,6 +6,7 @@ import javax.naming.AuthenticationException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -81,4 +82,10 @@ public class SocialMediaController {
         return ResponseEntity.ok(message);
     }
 
+    @DeleteMapping("/messages/{messageId}")
+    public ResponseEntity<Integer> deleteMessages(@PathVariable int messageId) {
+        System.out.println("you reached here\n\n");
+        Integer rows = messageSerivce.deleteMessages(messageId);
+        return ResponseEntity.ok(rows > 0 ? rows : null);
+    }
 }
