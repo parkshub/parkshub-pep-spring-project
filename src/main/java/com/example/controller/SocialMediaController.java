@@ -1,14 +1,19 @@
 package com.example.controller;
 
+import java.util.List;
+
 import javax.naming.AuthenticationException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.example.entity.Account;
 import com.example.entity.Message;
@@ -62,6 +67,18 @@ public class SocialMediaController {
     public ResponseEntity<Message> createMessage(@RequestBody Message message) {
         Message createdMessage = messageSerivce.createMessage(message);
         return ResponseEntity.ok(createdMessage);
+    }
+
+    @GetMapping("/messages")
+    public ResponseEntity<List<Message>> getAllMessages() {
+        List<Message> messages = messageSerivce.getAllMessages();
+        return ResponseEntity.ok(messages);
+    }
+
+    @GetMapping("/messages/{messageId}")
+    public ResponseEntity<Message> getMessage(@PathVariable int messageId) {
+        Message message = messageSerivce.getMessage(messageId);
+        return ResponseEntity.ok(message);
     }
 
 }

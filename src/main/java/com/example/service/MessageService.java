@@ -1,5 +1,7 @@
 package com.example.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.example.entity.Message;
@@ -29,5 +31,15 @@ public class MessageService {
         // the save method automatically generates an Id because of @GeneratedValue on our Id annotation in our Entity
         Message createdMessage = messageRepository.save(message);
         return createdMessage;
+    }
+
+    public List<Message> getAllMessages() {
+        List<Message> messages = messageRepository.findAll();
+        return messages;
+    }
+
+    public Message getMessage(int messageId) {
+        Message message = messageRepository.findById(messageId).orElse(null);
+        return message;
     }
 }
